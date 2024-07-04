@@ -1,5 +1,3 @@
-package com.example.wishlistapp
-
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,48 +8,48 @@ import com.example.wishlistapp.data.Wish
 import com.example.wishlistapp.data.WishRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class WishViewModel(
     private val wishRepository: WishRepository = Graph.wishRepository
-) : ViewModel(){
+) : ViewModel() {
 
     var wishTitleState by mutableStateOf("")
     var wishDescription by mutableStateOf("")
 
-    fun onWishTitleChange(newString:String){
+    fun onWishTitleChange(newString: String) {
         wishTitleState = newString
     }
 
-    fun onWishDescriptionChange(newString: String){
+    fun onWishDescriptionChange(newString: String) {
         wishDescription = newString
     }
 
-     lateinit var getAllWishes: Flow<List<Wish>>
+    // StateFlow to hold the list of wishes
+    val getAllWishes: StateFlow<List<Wish>> = wishRepository.getWishes()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    init {
-        viewModelScope.launch {
-            getAllWishes = wishRepository.getWishes()
-        }
-    }
-    fun addWIsh(wish:Wish){
-        viewModelScope.launch(Dispatchers.IO){
+    fun addWish(wish: Wish) {
+        viewModelScope.launch(Dispatchers.IO) {
             wishRepository.addWish(wish)
         }
     }
 
-    fun getWishById(id:Long):Flow<Wish>{
+    fun getWishById(id: Long): Flow<Wish> {
         return wishRepository.getWishById(id)
     }
 
-    fun updateWish(wish: Wish){
-        viewModelScope.launch {
+    fun updateWish(wish: Wish) {
+        viewModelScope.launch(Dispatchers.IO) {
             wishRepository.updateWish(wish)
         }
     }
 
-    fun deleteWish(wish: Wish){
-        viewModelScope.launch {
+    fun deleteWish(wish: Wish) {
+        viewModelScope.launch(Dispatchers.IO) {
             wishRepository.deleteWish(wish)
         }
     }

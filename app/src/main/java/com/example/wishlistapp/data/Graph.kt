@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 
 object Graph {
-    lateinit var database: WishDatabase
+    private lateinit var database: WishDatabase
 
     val wishRepository by lazy{
         WishRepository(wishDao = database.wishDao())
