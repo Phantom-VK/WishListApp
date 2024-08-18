@@ -14,31 +14,32 @@ import androidx.navigation.navArgument
 
 @Composable
 fun Navigation(
-    viewModel: WishViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    viewModel: WishViewModel = viewModel(), // ViewModel is provided by default to all screens
+    navController: NavHostController = rememberNavController() // Navigation controller to manage navigation
 ) {
+    // Define the navigation host with the start destination as the Home screen
     NavHost(
         navController = navController,
         startDestination = Screen.HomeScreen.route
     ) {
-        composable(
-            Screen.HomeScreen.route
-        ) {
+        // Composable for the Home screen
+        composable(Screen.HomeScreen.route) {
             HomeView(navController, viewModel)
         }
 
+        // Composable for the Add/Edit screen, taking an optional ID as a parameter
         composable(
             Screen.AddScreen.route + "/{id}",
             arguments = listOf(
-                navArgument("id"){
-                    type = NavType.LongType
-                    defaultValue = 0L
-                    nullable = false
+                navArgument("id") {
+                    type = NavType.LongType // Argument type is Long
+                    defaultValue = 0L // Default value is 0L, meaning it's a new wish
+                    nullable = false // Argument cannot be null
                 }
             )
-        ){entry ->
-            val id = if(entry.arguments != null) entry.arguments!!.getLong("id") else 0L
-            AddEditDetailView(id =id, viewModel = viewModel , navController =navController )
+        ) { entry ->
+            val id = entry.arguments?.getLong("id") ?: 0L // Retrieve the ID from the arguments
+            AddEditDetailView(id = id, viewModel = viewModel, navController = navController)
         }
     }
 }

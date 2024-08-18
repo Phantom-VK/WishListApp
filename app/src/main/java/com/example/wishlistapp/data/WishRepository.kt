@@ -2,22 +2,29 @@ package com.example.wishlistapp.data
 
 import kotlinx.coroutines.flow.Flow
 
+// Repository class to handle data operations. Provides a clean API for data access to the rest of the application.
 class WishRepository(private val wishDao: WishDao) {
-    fun addWish(wish: Wish){
-        wishDao.addWish(Wish())
+
+    // Adds a new wish to the database
+    fun addWish(wish: Wish) {
+        wishDao.addWish(wish)
     }
 
+    // Retrieves all wishes as a Flow, which allows observing the data
     fun getWishes(): Flow<List<Wish>> = wishDao.getAllWishes()
 
-    fun getWishById(id:Long): Flow<Wish>{
+    // Retrieves a specific wish by its ID as a Flow
+    fun getWishById(id: Long): Flow<Wish> {
         return wishDao.getWishById(id)
     }
 
-    suspend fun updateWish(wish: Wish){
+    // Updates an existing wish in the database
+    suspend fun updateWish(wish: Wish) {
         wishDao.updateWish(wish)
     }
 
-    suspend fun deleteWish(wish:Wish){
+    // Deletes a wish from the database
+    suspend fun deleteWish(wish: Wish) {
         wishDao.deleteWish(wish)
     }
 }
